@@ -86,7 +86,7 @@ from throttle import progress_decorator, process_data
 
 test_data = list(range(1, 11))
 
-@progress_decorator(total=10, desc="Processing data", style="bar", color="blue")
+@throttle_decorator(total=10, desc="Processing data", style="bar", color="blue")
 def process_data(data: List[int], throttle: Throttle):
   for item in data:
     my_example_function(item, throttle)
@@ -159,7 +159,7 @@ print(f"File downloaded: {filename}")
 from throttle import progress_decorator, Throttle
 import pandas as pd
 
-@progress_decorator(total=len(data), desc='Processing Data')
+@throttle_decorator(total=len(data), desc='Processing Data')
 def process_data(data: pd.DataFrame, throttle: Throttle):
   for index, row in data.iterrows():
     # Process each row of the DataFrame
