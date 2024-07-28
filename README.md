@@ -1,4 +1,5 @@
-## 🎉 Throttle: A Simple Python Progress Bar Library 🎉
+# ███████▒▒▒ 70% 
+# Throttle: A Python Progress Indicator Library 
 
 Tired of watching your code run without any feedback? ⏳ The `throttle` library makes it easy to add progress bars,
 spinners, clock and dots to your Python scripts, so you can see the progress of long-running operations.
@@ -117,6 +118,18 @@ with ProgressLoader(total=10, desc="Processing data", style="bar", color="blue",
                     callback=custom_callback) as test_loader:
     test_loader.with_function(my_example_function, test_data)
 ``` 
+### Customizing the Progress Bar Appearance
+
+```python
+from throttle import ProgressLoader
+
+with ProgressLoader(total=10, desc='Custom Progress Bar', style='bar', color='red', fill_char='*', empty_char='.') as loader:
+    for i in range(10):
+        loader.update()
+        time.sleep(0.5)
+        
+print("Progress bar completed")
+```
 
 # Real-World Examples 🌎
 
@@ -217,19 +230,6 @@ with ProgressLoader(total=10, desc='Running Task', callback=custom_callback) as 
 print("Task completed")
 ```
 
-### 5. Customizing the Progress Bar Appearance
-
-```python
-from throttle import ProgressLoader
-
-with ProgressLoader(total=10, desc='Custom Progress Bar', style='bar', color='red', fill_char='*', empty_char='.') as loader:
-    for i in range(10):
-        loader.update()
-        time.sleep(0.5)
-        
-print("Progress bar completed")
-```
-
 ### 6. Generating Thumbnails
 
 ```python
@@ -258,6 +258,10 @@ def generate_thumbnails(image_urls, thumbnail_dir, width, height):
     logging.info(f"Thumbnail generation completed with {success_count[0]} successes and {error_count[0]} errors.")
 
 ```
+
+
+
+
 #### `MANIFEST.in`
 
 ```plaintext
