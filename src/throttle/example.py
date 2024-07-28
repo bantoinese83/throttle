@@ -7,9 +7,10 @@ import pandas as pd
 import requests
 from PIL import Image
 
-from progress_loader import ProgressLoader, progress_decorator
+from throttle import Throttle, throttle_decorator
 
-logging.basicConfig(level=logging.DEBUG, format="%(asctime)s - %(levelname)s - %(message)s", datefmt="%Y-%m-%d %H:%M:%S")
+logging.basicConfig(level=logging.DEBUG, format="%(asctime)s - %(levelname)s - %(message)s",
+                    datefmt="%Y-%m-%d %H:%M:%S")
 
 # Create test_data directory if it doesn't exist
 test_data_dir = "test_data"
@@ -79,17 +80,19 @@ def process_csv_data(filename):
             process_data_item(row, progress_loader, success_count, error_count)
         logging.info(f"Processing completed with {success_count[0]} successes and {error_count[0]} errors.")
 
-    with ProgressLoader(total=len(df), desc="Processing CSV data", style="bar", color="blue", bar_length=10) as loader:
+    with Throttle(total=len(df), desc="Processing CSV data", style="bar", color="blue", bar_length=10) as loader:
         custom_callback(loader)
 
 
-@progress_decorator(total=3, desc="Downloading files", style="bar", color="green", bar_length=10)
-def download_multiple_files(urls, progress_loader):
-    success_count = [0]
-    error_count = [0]
+@throttle_decorator(total=3, desc="Downloading files", style="bar", color="green", bar_length=10)
+def download_multiple_files(urls, throttle_loader=None):
     for url in urls:
-        download_file(url, progress_loader, success_count, error_count)
-    logging.info(f"Downloading completed with {success_count[0]} successes and {error_count[0]} errors.")
+        # Simulate file download
+        time.sleep(1)
+        if throttle_loader:
+            throttle_loader.update()
+        print(f"Downloaded {url}")
+    logging.info("Download tasks completed.")
 
 
 def generate_thumbnails(image_urls, thumbnail_dir, width, height):
@@ -97,8 +100,8 @@ def generate_thumbnails(image_urls, thumbnail_dir, width, height):
     success_count = [0]
     error_count = [0]
 
-    with ProgressLoader(total=len(image_urls), desc="Generating Thumbnails", style="time_clock",
-                        color="blue") as loader:
+    with Throttle(total=len(image_urls), desc="Generating Thumbnails", style="time_clock",
+                  color="blue") as loader:
         for image_url in image_urls:
             try:
                 # Download the image first
