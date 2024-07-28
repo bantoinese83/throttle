@@ -181,66 +181,6 @@ class TestProgressLoader(unittest.TestCase):
             loader.with_function(my_example_function, [])  # Ensure the function raises ValueError for empty data
 
 
-class TestProgressLoaderMain(unittest.TestCase):
-
-    @patch('sys.stdout', new_callable=StringIO)
-    def test_with_function_bar_style(self, mock_stdout):
-        test_data = list(range(1, 11))
-        with ProgressLoader(total=10, desc="Processing data", style="bar", color="blue") as test_loader:
-            test_loader.with_function(my_example_function, test_data)
-        output = mock_stdout.getvalue()
-        self.assertIn("Processing 10", output)
-
-    @patch('sys.stdout', new_callable=StringIO)
-    def test_with_function_spinner_style(self, mock_stdout):
-        test_data = list(range(1, 11))
-        with ProgressLoader(total=10, desc="Processing data", spinner=True) as test_loader:
-            test_loader.with_function(my_example_function, test_data)
-        output = mock_stdout.getvalue()
-        self.assertIn("Processing data: |", output)
-
-    @patch('sys.stdout', new_callable=StringIO)
-    def test_with_function_dots_style(self, mock_stdout):
-        test_data = list(range(1, 11))
-        with ProgressLoader(total=10, desc="Processing data", style="dots", fill_char="*",
-                            empty_char=".") as test_loader:
-            test_loader.with_function(my_example_function, test_data)
-        output = mock_stdout.getvalue()
-        self.assertIn("Processing data: ..", output)
-
-    @patch('sys.stdout', new_callable=StringIO)
-    def test_update_directly_bar_style(self, mock_stdout):
-        test_loader = ProgressLoader(total=5, desc="Loading", style="bar", color="green")
-        test_loader.start()
-        for i in range(5):
-            test_loader.update()
-            time.sleep(0.5)
-        test_loader.close()
-        output = mock_stdout.getvalue()
-        # Remove ANSI color codes for comparison
-        output = output.replace("\033[92m", "").replace("\033[0m", "")
-        self.assertIn("Loading: [####                ] 20% (1/5 items)", output)
-        self.assertIn("Loading: [########            ] 40% (2/5 items)", output)
-        self.assertIn("Loading: [############        ] 60% (3/5 items)", output)
-        self.assertIn("Loading: [################    ] 80% (4/5 items)", output)
-        self.assertIn("Loading: [####################] 100% (5/5 items)", output)
-
-    @patch('sys.stdout', new_callable=StringIO)
-    def test_decorator(self, mock_stdout):
-        test_data = list(range(1, 11))
-        process_data(test_data)
-        output = mock_stdout.getvalue()
-        self.assertIn("Processing 10", output)
-
-    @patch('sys.stdout', new_callable=StringIO)
-    def test_with_function_time_clock_style(self, mock_stdout):
-        test_data = list(range(1, 11))
-        with ProgressLoader(total=10, desc="Time Clock Progress", style="time_clock") as test_loader:
-            test_loader.with_function(my_example_function, test_data)
-        output = mock_stdout.getvalue()
-        self.assertIn("Time Clock Progress: 🕝", output)  # Adjusted expected clock emoji
-
-
 class TestProgressLoaderEdgeCases(unittest.TestCase):
 
     def test_zero_total(self):

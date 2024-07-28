@@ -217,6 +217,48 @@ with ProgressLoader(total=10, desc='Running Task', callback=custom_callback) as 
 print("Task completed")
 ```
 
+### 5. Customizing the Progress Bar Appearance
+
+```python
+from throttle import ProgressLoader
+
+with ProgressLoader(total=10, desc='Custom Progress Bar', style='bar', color='red', fill_char='*', empty_char='.') as loader:
+    for i in range(10):
+        loader.update()
+        time.sleep(0.5)
+        
+print("Progress bar completed")
+```
+
+### 6. Generating Thumbnails
+
+```python
+def generate_thumbnails(image_urls, thumbnail_dir, width, height):
+    success_count = [0]
+    error_count = [0]
+
+    with ProgressLoader(total=len(image_urls), desc="Generating Thumbnails", style="time_clock",
+                        color="blue") as loader:
+        for image_url in image_urls:
+            try:
+                response = requests.get(image_url)
+                response.raise_for_status()
+                image = Image.open(BytesIO(response.content))
+                thumbnail_path = os.path.join(thumbnail_dir, os.path.basename(image_url))
+                image.thumbnail((width, height))
+                image.save(thumbnail_path)
+                logging.info(f"Generated thumbnail: {thumbnail_path}")
+                success_count[0] += 1
+            except Exception as e:
+                logging.error(f"Error generating thumbnail for {image_url}: {e}")
+                error_count[0] += 1
+            finally:
+                loader.update()
+
+    logging.info(f"Thumbnail generation completed with {success_count[0]} successes and {error_count[0]} errors.")
+
+```
 #### `MANIFEST.in`
+
 ```plaintext
 include README.md
